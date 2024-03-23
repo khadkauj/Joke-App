@@ -3,13 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, Button } from 'react-native';
 import axios from 'axios';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Details screen component
 const DetailsScreen = ({ route }) => {
   const { punchline, setup } = route.params.item;
 
   return (
-    <View style={styles.container}>
+    <View style={styles.detailsContainer}>
       <Text style={styles.detailBody}>{setup}</Text>
       <Text style={styles.detailTitle}>{punchline}</Text>
     </View>
@@ -19,6 +20,7 @@ const DetailsScreen = ({ route }) => {
 // Home screen component
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
+  const [refreshing, setrefreshing] = useState(false)
 
   // Fetch data from the API on component mount
   useEffect(() => {
@@ -29,17 +31,15 @@ const HomeScreen = ({ navigation }) => {
     try {
       const response = await axios.get('https://official-joke-api.appspot.com/jokes/programming/ten');
       setData(response.data);
+      setrefreshing(false)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   const refreshData = () => {
+    setrefreshing(true)
     fetchData();
-  };
-
-  const exitApp = () => {
-    // Handle exit app action here
   };
 
   const renderItem = ({ item }) => (
@@ -51,17 +51,18 @@ const HomeScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonsContainer}>
-        <Button title="Refresh" onPress={refreshData} />
-        <Button title="Exit" onPress={exitApp} />
-      </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.detailTitle}>Programming Jokes</Text>
+      <Text></Text>
       <FlatList
+        showsVerticalScrollIndicator={false}
+        onRefresh={fetchData}
+        refreshing={refreshing}
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -83,12 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ecf0f1',
     paddingHorizontal: 10,
-    paddingTop: 20
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
+    paddingTop: -20
   },
   item: {
     backgroundColor: '#fff',
@@ -104,12 +100,43 @@ const styles = StyleSheet.create({
   detailTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333'
+    marginBottom: 32,
+    color: '#333',
+    display: "none"
   },
   detailBody: {
     fontSize: 16,
     lineHeight: 24,
     color: '#555'
-  }
+  },
+  detailsContainer: {
+    textAlign: 'center',
+    margin: "auto"
+  },
+  detailsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: '#ffffff', 
+    borderRadius: 10, 
+    alignItems: 'center', 
+    shadowColor: '#ecf0f1', 
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84, 
+    elevation: 5, 
+    padding: 14
+  },
+  detailBody: {
+    fontSize: 16, 
+    marginBottom: 10, 
+    textAlign: 'center',
+  },
+  detailTitle: {
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    textAlign: 'center', 
+  },
 });
