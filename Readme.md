@@ -2,13 +2,13 @@
 
 ## Overview
 
-This is a simple React Native app that displays programming jokes fetched from the "Official Joke API". The app allows users to view jokes and refresh the list of jokes. Additionally, there's an option to exit the app gracefully.
+This is a simple React Native app that displays programming jokes fetched from the "Official Joke API". The app allows users to view jokes and refresh the list of jokes. 
 
 ## Features
 
 - Fetches programming jokes from the "Official Joke API".
-- Displays a list of jokes with setup and punchline.
-- Provides a refresh button to fetch new jokes.
+- Displays a list of prgogramming jokes with setup and punchline.
+- Pull to refresh functionality to fetch new jokes
 
 ## Usage
 
